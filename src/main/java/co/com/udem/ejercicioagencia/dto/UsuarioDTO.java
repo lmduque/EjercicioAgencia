@@ -1,32 +1,43 @@
 package co.com.udem.ejercicioagencia.dto;
 
-public class UsuarioDTO {
-	private Long id;
+import org.springframework.beans.factory.annotation.Autowired;
+
+public class UsuarioDTO {	
+	private Long   numeroIdentificacion;
 	private String nombres;
-	private String apellidos;
-	private String tipoIdentificacion;
-	private Long numeroIdentificacion;
+	private String apellidos;	
 	private String direccion;
-	private Long telefono;
+	private String telefono;
 	private String email;
 	private String password;
 
-	public UsuarioDTO(Long id, String nombres, String apellidos, String tipoIdentificacion, Long numeroIdentificacion,
-			String direccion, Long telefono, String email, String password) {
+	@Autowired
+	TipoIdentificacionDTO tipoIdentificacionDTO;
+
+	public UsuarioDTO(Long numeroIdentificacion, String nombres, String apellidos, String direccion, String telefono,
+			String email, String password, TipoIdentificacionDTO tipoIdentificacionDTO) {
 		super();
-		this.id = id;
+		this.numeroIdentificacion = numeroIdentificacion;
 		this.nombres = nombres;
 		this.apellidos = apellidos;
-		this.tipoIdentificacion = tipoIdentificacion;
-		this.numeroIdentificacion = numeroIdentificacion;
 		this.direccion = direccion;
 		this.telefono = telefono;
 		this.email = email;
 		this.password = password;
+		this.tipoIdentificacionDTO = tipoIdentificacionDTO;
 	}
 
 	public UsuarioDTO() {
 		super();
+		// TODO Auto-generated constructor stub
+	}
+
+	public Long getNumeroIdentificacion() {
+		return numeroIdentificacion;
+	}
+
+	public void setNumeroIdentificacion(Long numeroIdentificacion) {
+		this.numeroIdentificacion = numeroIdentificacion;
 	}
 
 	public String getNombres() {
@@ -45,22 +56,6 @@ public class UsuarioDTO {
 		this.apellidos = apellidos;
 	}
 
-	public String getTipoIdentificacion() {
-		return tipoIdentificacion;
-	}
-
-	public void setTipoIdentificacion(String tipoIdentificacion) {
-		this.tipoIdentificacion = tipoIdentificacion;
-	}
-
-	public Long getNumeroIdentificacion() {
-		return numeroIdentificacion;
-	}
-
-	public void setNumeroIdentificacion(Long numeroIdentificacion) {
-		this.numeroIdentificacion = numeroIdentificacion;
-	}
-
 	public String getDireccion() {
 		return direccion;
 	}
@@ -69,11 +64,11 @@ public class UsuarioDTO {
 		this.direccion = direccion;
 	}
 
-	public Long getTelefono() {
+	public String getTelefono() {
 		return telefono;
 	}
 
-	public void setTelefono(Long telefono) {
+	public void setTelefono(String telefono) {
 		this.telefono = telefono;
 	}
 
@@ -93,12 +88,14 @@ public class UsuarioDTO {
 		this.password = password;
 	}
 
-	public Long getId() {
-		return id;
+	public TipoIdentificacionDTO getTipoIdentificacionDTO() {
+		return tipoIdentificacionDTO;
 	}
 
-	public void setId(Long id) {
-		this.id = id;
+	public void setTipoIdentificacionDTO(TipoIdentificacionDTO tipoIdentificacionDTO) {
+		this.tipoIdentificacionDTO = tipoIdentificacionDTO;
 	}
+
+	
 
 }

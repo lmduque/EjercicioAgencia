@@ -1,113 +1,167 @@
 package co.com.udem.ejercicioagencia.entities;
 
+import static java.util.stream.Collectors.toList;
+
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.List;
+import java.util.Set;
+
+import javax.persistence.Column;
+import javax.persistence.ElementCollection;
 import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
+import javax.persistence.FetchType;
 import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
+import javax.persistence.OneToMany;
+import javax.persistence.Table;
+
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
+import org.springframework.security.core.userdetails.UserDetails;
+
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Data;
+import lombok.NoArgsConstructor;
 
 @Entity
-public class Usuario {
+@Table(name = "usuario")
+@Data
+@Builder
+@NoArgsConstructor
+@AllArgsConstructor
+public class Usuario implements UserDetails {
 
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
 	@Id
-	@GeneratedValue(strategy = GenerationType.IDENTITY)
-	private Long id;
-	private String nombres;
-	private String apellidos;
-	private String tipoIdentificacion;
 	private Long numeroIdentificacion;
+	@Column(nullable = false)
+	private String nombres;
+	//@Column(nullable = false)
+	private String apellidos;
+	//@Column(nullable = false)
 	private String direccion;
-	private Long telefono;
+	private String telefono;
+	@Column(nullable = false,unique=true)
 	private String email;
+	@Column(nullable = false)
 	private String password;
 
-	public Usuario(Long id, String nombres, String apellidos, String tipoIdentificacion, Long numeroIdentificacion,
-			String direccion, Long telefono, String email, String password) {
+	/*@ManyToOne(cascade = { CascadeType.PERSIST, CascadeType.MERGE })
+	@JoinColumn(name = "tipoDocumento_fk", referencedColumnName = "codigo")
+	private TipoIdentificacion tipoIdentificacion;*/
+	
+	@ManyToOne
+	@JoinColumn(name="tipo_documento_fk")	  
+	private TipoIdentificacion tipoIdentificacion;
+
+	/*@OneToMany(mappedBy = "usuario")
+	private List<Propiedad> propiedad;*/
+	
+	@OneToMany
+	@JoinColumn(name="usuario_fk")	  
+	private Set<Propiedad> propieadad;
+
+	@ElementCollection(fetch = FetchType.EAGER)
+	@Builder.Default
+	private List<String> roles = new ArrayList<>();
+
+	public Usuario(Long numeroIdentificacion, String nombres, String apellidos, String direccion, String telefono,
+			String email, String password, TipoIdentificacion tipoIdentificacion) {
 		super();
-		this.id = id;
+		this.numeroIdentificacion = numeroIdentificacion;
 		this.nombres = nombres;
 		this.apellidos = apellidos;
-		this.tipoIdentificacion = tipoIdentificacion;
-		this.numeroIdentificacion = numeroIdentificacion;
 		this.direccion = direccion;
 		this.telefono = telefono;
 		this.email = email;
 		this.password = password;
-	}
-
-	public Usuario() {
-		super();
-	}
-
-	public String getNombres() {
-		return nombres;
-	}
-
-	public void setNombres(String nombres) {
-		this.nombres = nombres;
-	}
-
-	public String getApellidos() {
-		return apellidos;
-	}
-
-	public void setApellidos(String apellidos) {
-		this.apellidos = apellidos;
-	}
-
-	public String getTipoIdentificacion() {
-		return tipoIdentificacion;
-	}
-
-	public void setTipoIdentificacion(String tipoIdentificacion) {
 		this.tipoIdentificacion = tipoIdentificacion;
 	}
 
-	public Long getNumeroIdentificacion() {
-		return numeroIdentificacion;
-	}
-
-	public void setNumeroIdentificacion(Long numeroIdentificacion) {
-		this.numeroIdentificacion = numeroIdentificacion;
-	}
-
-	public String getDireccion() {
-		return direccion;
-	}
-
-	public void setDireccion(String direccion) {
-		this.direccion = direccion;
-	}
-
-	public Long getTelefono() {
-		return telefono;
-	}
-
-	public void setTelefono(Long telefono) {
-		this.telefono = telefono;
-	}
-
-	public String getEmail() {
-		return email;
-	}
-
-	public void setEmail(String email) {
-		this.email = email;
-	}
-
+	@Override
 	public String getPassword() {
-		return password;
+		return this.password;
 	}
 
-	public void setPassword(String password) {
-		this.password = password;
+	@Override
+	public Collection<? extends GrantedAuthority> getAuthorities() {
+		// TODO Auto-generated method stub
+		return this.roles.stream().map(SimpleGrantedAuthority::new).collect(toList());
 	}
 
-	public Long getId() {
-		return id;
+	@Override
+	public String getUsername() {
+		// TODO Auto-generated method stub
+		return this.email;
 	}
 
-	public void setId(Long id) {
-		this.id = id;
+	@Override
+	public boolean isAccountNonExpired() {
+		// TODO Auto-generated method stub
+		return true;
 	}
+
+	@Override
+	public boolean isAccountNonLocked() {
+		// TODO Auto-generated method stub
+		return true;
+	}
+
+	@Override
+	public boolean isCredentialsNonExpired() {
+		// TODO Auto-generated method stub
+		return true;
+	}
+
+	@Override
+	public boolean isEnabled() {
+		// TODO Auto-generated method stub
+		return true;
+	}
+
+	/*
+	 * public Usuario() { super(); // TODO Auto-generated constructor stub }
+	 */
+
+	/*
+	 * public Long getNumeroIdentificacion() { return numeroIdentificacion; }
+	 * 
+	 * public void setNumeroIdentificacion(Long numeroIdentificacion) {
+	 * this.numeroIdentificacion = numeroIdentificacion; }
+	 * 
+	 * public String getNombres() { return nombres; }
+	 * 
+	 * public void setNombres(String nombres) { this.nombres = nombres; }
+	 * 
+	 * public String getApellidos() { return apellidos; }
+	 * 
+	 * public void setApellidos(String apellidos) { this.apellidos = apellidos; }
+	 * 
+	 * public String getDireccion() { return direccion; }
+	 * 
+	 * public void setDireccion(String direccion) { this.direccion = direccion; }
+	 * 
+	 * public String getTelefono() { return telefono; }
+	 * 
+	 * public void setTelefono(String telefono) { this.telefono = telefono; }
+	 * 
+	 * public String getEmail() { return email; }
+	 * 
+	 * public void setEmail(String email) { this.email = email; }
+	 * 
+	 * public void setPassword(String password) { this.password = password; }
+	 * 
+	 * public TipoIdentificacion getTipoIdentificacion() { return
+	 * tipoIdentificacion; }
+	 * 
+	 * public void setTipoIdentificacion(TipoIdentificacion tipoIdentificacion) {
+	 * this.tipoIdentificacion = tipoIdentificacion; }
+	 */
 
 }
